@@ -25,3 +25,15 @@ def main():
             print("not a valid color")
 
 main()
+
+# =============================================================================
+# https://github.com/siewilliam01/RasPi5/blob/main/makey_bot_iroman.py
+# William Sie
+# Name: makey_bot_iroman.py
+# Description: Turns on one light only based on user console input
+# Dependencies: python 3
+# License: GNU General Public License v2.0
+# Inputs: console
+# Outputs: 3x LEDs
+# Created: 03/12/25
+# Updated: 03/13/25
