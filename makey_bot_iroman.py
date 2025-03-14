@@ -11,14 +11,19 @@ def stop_light(_colors_dict):
         print(led_str)
         eval(led_str)
 
+def dict_change(_colors_dict):
+    for key in _colors_dict:
+        _colors_dict[key] = 'off'
+        print(_colors_dict)
+    return _colors_dict
+
 def main():
     colors_dict = {'red' : 'off', 'yellow' : 'off', 'green' : 'off'}
     while True:
         print("Input 'red' 'yellow' or 'green'")
         user_color = input(">>> ")
         if(user_color in colors_dict):
-            for key in colors_dict:
-                colors_dict[key] = 'off'
+            colors_dict = dict_change(colors_dict)
             colors_dict[user_color] = 'on'
             stop_light(colors_dict)
         else:
@@ -36,4 +41,4 @@ main()
 # Inputs: console
 # Outputs: 3x LEDs
 # Created: 03/12/25
-# Updated: 03/13/25
+# Updated: 03/14/25
