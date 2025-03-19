@@ -6,34 +6,67 @@ import time
 red_led = LED(3)
 yellow_led = LED(15)
 green_led = LED(27)
-r_light_L = PWMLED(25)
-g_light_L = PWMLED(8)
-b_light_L = PWMLED(7)
-r_light_R = PWMLED(5)
-g_light_R = PWMLED(6)
-b_light_R = PWMLED(13)
+red_left_light = PWMLED(25)
+green_left_light = PWMLED(8)
+blue_left_light = PWMLED(7)
+red_right_light = PWMLED(5)
+green_right_light = PWMLED(6)
+blue_right_light = PWMLED(13)
+
+def get_colors():
+    stop_colors_dict = {'red' : 'off', 'yellow' : 'off', 'green' : 'off'}
+    eye_colors_L_dict = {'red_left' : 0, 'green_left' : 0, 'blue_left' : 0}
+    eye_colors_R_dict = {'red_right' : 0, 'green_right' : 0, 'blue_right' : 0}
+    colors_list = [stop_colors_dict, eye_colors_L_dict, eye_colors_R_dict]
+    return colors_list
 
 def stop_light(_stop_colors_dict):
     for key in _stop_colors_dict:
         led_str = key + '_led.' + _stop_colors_dict[key] + '()'
-        eval(led_str)
+        exec(led_str)
 
-def stop_dict_change(_stop_colors_dict):
-    for key in _stop_colors_dict:
-        _stop_colors_dict[key] = 'off'
+def eyes_RGB(eyes):
+    for i in eyes:
+        for key in i:
+            eye_str = key + '_light.value = ' + str(i[key])
+            exec(eye_str)
+            
+
+def stop_dict_change(_stop_colors_dict, _user_color):
+    if(_user_color in _stop_colors_dict):
+        for key in _stop_colors_dict:
+            _stop_colors_dict[key] = 'off'
+        _stop_colors_dict[_user_color] = 'on'
+    else:
+        print("skipping")
     return _stop_colors_dict
 
+#def eyes_dict_change():
+    
+
 def main():
-    stop_colors_dict = {'red' : 'off', 'yellow' : 'off', 'green' : 'off'}
+    colors_list = get_colors()
     while True:
-        print("Input 'red' 'yellow' or 'green'")
-        user_stop_color = input(">>> ")
-        if(user_stop_color in stop_colors_dict):
-            stop_colors_dict = stop_dict_change(stop_colors_dict)
-            stop_colors_dict[user_stop_color] = 'on'
-            stop_light(stop_colors_dict)
-        else:
-            print("not a valid color")
+        print("Input traffic light color 'red' 'yellow' or 'green'")
+        user_color = input(">>> ")
+        stop_colors_dict_ = stop_dict_change(colors_list[0], user_color)
+        for i in colors_list[1:]:
+            for e in i:
+                print("Input eye value for", e, "from 0 to 1")
+                user_eye = input(">>> ")
+                try:
+                    user_eye = float(user_eye)
+                    if(user_eye < 0 or user_eye > 1):
+                        raise Exception
+                except:
+                    print("skipping")
+                else:
+                    i[e] = user_eye
+        print(colors_list)
+        stop_light(stop_colors_dict_)
+        eyes_RGB(colors_list[1:])
+        
+        
 
 main()
 
@@ -47,4 +80,4 @@ main()
 # Inputs: console
 # Outputs: 3x LEDs
 # Created: 03/12/25
-# Updated: 03/17/25
+# Updated: 03/19/25
