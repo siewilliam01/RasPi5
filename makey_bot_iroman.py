@@ -29,8 +29,7 @@ def eyes_RGB(eyes):
     for i in eyes:
         for key in i:
             eye_str = key + '_light.value = ' + str(i[key])
-            exec(eye_str)
-            
+            exec(eye_str)            
 
 def stop_dict_change(_stop_colors_dict, _user_color):
     if(_user_color in _stop_colors_dict):
@@ -51,17 +50,22 @@ def main():
         user_color = input(">>> ")
         stop_colors_dict_ = stop_dict_change(colors_list[0], user_color)
         for i in colors_list[1:]:
-            for e in i:
-                print("Input eye value for", e, "from 0 to 1")
-                user_eye = input(">>> ")
-                try:
-                    user_eye = float(user_eye)
-                    if(user_eye < 0 or user_eye > 1):
-                        raise Exception
-                except:
-                    print("skipping")
-                else:
-                    i[e] = user_eye
+            print("Input hex code for eye")
+            user_eye = input(">>> ")
+            if(user_eye):
+                user_eye = user_eye.upper() + "A"
+                count = 0
+                for e in i:
+                    try:
+                        i[e] = user_eye[-7+count:-5+count]
+                        i[e] = int(i[e], 16)
+                    except:
+                        print("skipping, invalid digit")
+                    else:
+                        i[e] = i[e] / 255
+                        count += 2
+                        if("red" in e):
+                            i[e] = i[e] / 2
         print(colors_list)
         stop_light(stop_colors_dict_)
         eyes_RGB(colors_list[1:])
@@ -80,4 +84,4 @@ main()
 # Inputs: console
 # Outputs: 3x LEDs
 # Created: 03/12/25
-# Updated: 03/19/25
+# Updated: 03/21/25
