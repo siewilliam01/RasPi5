@@ -1,7 +1,8 @@
 from gpiozero import LED
 from gpiozero import PWMLED
+from gpiozero import Servo
 import random
-import time
+from time import sleep
 
 red_led = LED(3)
 yellow_led = LED(15)
@@ -12,6 +13,8 @@ blue_left_light = PWMLED(7)
 red_right_light = PWMLED(5)
 green_right_light = PWMLED(6)
 blue_right_light = PWMLED(13)
+
+nod_servo = Servo(26, min_pulse_width = (1+0.5)/1000, max_pulse_width = (2+0.2)/1000)
 
 def get_colors():
     stop_colors_dict = {'red' : 'off', 'yellow' : 'off', 'green' : 'off'}
@@ -40,9 +43,6 @@ def stop_dict_change(_stop_colors_dict, _user_color):
         print("skipping")
     return _stop_colors_dict
 
-#def eyes_dict_change():
-    
-
 def main():
     colors_list = get_colors()
     while True:
@@ -57,8 +57,8 @@ def main():
                 count = 0
                 for e in i:
                     try:
-                        i[e] = user_eye[-7+count:-5+count]
-                        i[e] = int(i[e], 16)
+                        hex_input = user_eye[-7+count:-5+count]
+                        i[e] = int(hex_input, 16)
                     except:
                         print("skipping, invalid digit")
                     else:
@@ -69,7 +69,11 @@ def main():
         print(colors_list)
         stop_light(stop_colors_dict_)
         eyes_RGB(colors_list[1:])
-        
+        for waves in range(5):
+            nod_servo.min()
+            sleep(0.5)
+            nod_servo.max()
+            sleep(0.5)        
         
 
 main()
@@ -84,4 +88,6 @@ main()
 # Inputs: console
 # Outputs: 3x LEDs
 # Created: 03/12/25
-# Updated: 03/21/25
+# Updated: 03/24/25
+
+
