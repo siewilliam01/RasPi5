@@ -14,7 +14,7 @@ red_right_light = PWMLED(5)
 green_right_light = PWMLED(6)
 blue_right_light = PWMLED(13)
 
-nod_servo = Servo(26, min_pulse_width = (1+0.5)/1000, max_pulse_width = (2+0.2)/1000)
+nod_servo = Servo(26, min_pulse_width=0.0015, max_pulse_width=0.0022)
 
 def get_colors():
     stop_colors_dict = {'red' : 'off', 'yellow' : 'off', 'green' : 'off'}
@@ -71,10 +71,9 @@ def main():
         eyes_RGB(colors_list[1:])
         for waves in range(5):
             nod_servo.min()
-            sleep(0.5)
+            sleep(0.25)
             nod_servo.max()
-            sleep(0.5)        
-        
+            sleep(0.25)
 
 main()
 
@@ -88,6 +87,6 @@ main()
 # Inputs: console
 # Outputs: 3x LEDs
 # Created: 03/12/25
-# Updated: 03/24/25
+# Updated: 03/25/25
 
 
