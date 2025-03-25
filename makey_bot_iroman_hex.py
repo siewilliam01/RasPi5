@@ -43,6 +43,14 @@ def stop_dict_change(_stop_colors_dict, _user_color):
         print("skipping")
     return _stop_colors_dict
 
+def nod():
+    for waves in range(5):
+        nod_servo.min()
+        sleep(0.25)
+        nod_servo.max()
+        sleep(0.25)
+    nod_servo.detach()
+
 def main():
     colors_list = get_colors()
     while True:
@@ -69,11 +77,7 @@ def main():
         print(colors_list)
         stop_light(stop_colors_dict_)
         eyes_RGB(colors_list[1:])
-        for waves in range(5):
-            nod_servo.min()
-            sleep(0.25)
-            nod_servo.max()
-            sleep(0.25)
+        nod()
 
 main()
 
