@@ -5,7 +5,10 @@ data_dict = {}
 
 count = 0
 
-ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)  # Open Serial port
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)  # Open Serial port
+while False:
+    raw_line = ser.readline().decode("utf-8")
+    print(raw_line)
 while True:
     raw_line = ser.readline().decode("utf-8")
     if "GPGGA" in raw_line:
