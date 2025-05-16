@@ -4,27 +4,40 @@ import serial
 data_dict = {}
 
 count = 0
+check = 0
+GPGGA_list = []
+GPGSV_list = []
 
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)  # Open Serial port
 while False:
-    raw_line = ser.readline().decode("utf-8")
-    print(raw_line)
+    raw_data = ser.readline().decode("utf-8")
+    print(raw_data)
 while True:
-    raw_line = ser.readline().decode("utf-8")
-    if "GPGGA" in raw_line:
+    raw_data = ser.readline().decode("utf-8")
+    if "GPGGA" in raw_data:
+        GPGGA_line = raw_data
+        GPGGA_list = GPGGA_line.split(",")
+        check += 1
+    if "GPGSV" in raw_data:
+        GPGSV_line = raw_data
+        GPGSV_list_temp = GPGSV_line.split(",")
+        if "1" in GPGSV_list_temp[2]:
+            GPGSV_list = GPGSV_list_temp
+            check +=1
+    if check >= 2:
+        data_dict["time"] = GPGGA_list[1]
+        data_dict["latitude"] = GPGGA_list[2]
+        data_dict["N/S"] = GPGGA_list[3]
+        data_dict["longitude"] = GPGGA_list[4]
+        data_dict["E/W"] = GPGGA_list[5]
+        data_dict["altitude"] = GPGGA_list[9]
+        data_dict["alt unit"] = GPGGA_list[10]
+        data_dict["quality"] = GPGGA_list[6]
+        data_dict["sats view"] = GPGSV_list[3]
+        data_dict["sats used"] = GPGGA_list[7]
+        data_dict["HDOP"] = GPGGA_list[8]
+        check = 0
         count += 1
-        line = raw_line
-        lines = line.split(",")
-        data_dict["time"] = lines[1]
-        data_dict["latitude"] = lines[2]
-        data_dict["N/S"] = lines[3]
-        data_dict["longitude"] = lines[4]
-        data_dict["E/W"] = lines[5]
-        data_dict["altitude"] = lines[9]
-        data_dict["alt unit"] = lines[10]
-        data_dict["quality"] = lines[6]
-        data_dict["satellites"] = lines[7]
-        data_dict["HDOP"] = lines[8]
         print("\n", count)
         for i in data_dict:
             print(i, ":", data_dict[i])
