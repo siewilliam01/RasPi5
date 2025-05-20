@@ -7,7 +7,7 @@ count = 0
 check = 0
 GPGGA_list = []
 GPGSV_list = []
-connection_status = True
+connection_status = False
 
 while True:
     try:
