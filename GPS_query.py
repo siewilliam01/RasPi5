@@ -3,6 +3,7 @@ import serial
 
 data_dict = {}
 
+fail_count = 0
 check = 0
 GPGGA_list = []
 GPGSV_list = []
@@ -13,6 +14,12 @@ while completed == False:
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
         completed = True
     except:
+        fail_count += 1
+        print(fail_count)
+        time.sleep(1)
+        if fail_count >= 30:
+            print("no GPS detected")
+            raise SystemExit
         pass
 while check < 2:
     try:
@@ -23,13 +30,15 @@ while check < 2:
         if "GPGGA" in raw_data:
             GPGGA_line = raw_data
             GPGGA_list = GPGGA_line.split(",")
-            check += 1
+            if len(GPGGA_list[2]) > 0:
+                check += 1
         if "GPGSV" in raw_data:
             GPGSV_line = raw_data
             GPGSV_list_temp = GPGSV_line.split(",")
             if "1" in GPGSV_list_temp[2]:
                 GPGSV_list = GPGSV_list_temp
-                check +=1
+                if len(GPGSV_list[3]) > 0:
+                    check +=1
 data_dict["time"] = GPGGA_list[1]
 data_dict["latitude"] = GPGGA_list[2]
 data_dict["N/S"] = GPGGA_list[3]
@@ -43,4 +52,5 @@ data_dict["sats used"] = GPGGA_list[7]
 data_dict["HDOP"] = GPGGA_list[8]
 for i in data_dict:
     print(i, ":", data_dict[i])
+
 
